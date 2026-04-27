@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Mall Customer Segmentation — K-Means</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div class="hero-icon">🛒</div>
+    <h1 class="hero-title">Mall Customer<br/>Segmentation</h1>
+    <p class="hero-sub">Segmentasi Pelanggan Berdasarkan Annual Income &amp; Spending Score menggunakan K-Means Clustering</p>
+
+    <div class="input-card">
+      <label class="input-label">Tentukan Jumlah Cluster (K):</label>
+      <div class="input-row">
+        <input type="number" id="kInput" value="5" min="2" max="10" class="k-input" placeholder="5"/>
+        <button class="run-btn" onclick="runAnalysis()">
+          <span class="btn-icon">▶</span> Jalankan Analisis
+        </button>
+      </div>
+      <p class="input-hint">* Masukkan angka minimal 2 berdasarkan hasil analisis Elbow.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── LOADING ── -->
+<div id="loading" class="loading hidden">
+  <div class="spinner"></div>
+  <p>Menjalankan K-Means Clustering...</p>
+</div>
+
+<!-- ── RESULTS ── -->
+<section id="results" class="results hidden">
+
+  <!-- Metric strip -->
+  <div class="metrics-strip">
+    <div class="metric-box">
+      <span class="m-val" id="mTotal">200</span>
+      <span class="m-lbl">Total Pelanggan</span>
+    </div>
+    <div class="metric-box">
+      <span class="m-val" id="mK">—</span>
+      <span class="m-lbl">Jumlah Cluster</span>
+    </div>
+    <div class="metric-box">
+      <span class="m-val" id="mIncome">—</span>
+      <span class="m-lbl">Avg. Annual Income</span>
+    </div>
+    <div class="metric-box">
+      <span class="m-val" id="mScore">—</span>
+      <span class="m-lbl">Avg. Spending Score</span>
+    </div>
+  </div>
+
+  <!-- Charts row -->
+  <div class="charts-row">
+    <div class="chart-card wide">
+      <div class="card-head">
+        <span class="card-title">📈 Scatter Plot — Annual Income vs Spending Score</span>
+        <span class="card-badge" id="scatterBadge">K=5</span>
+      </div>
+      <div id="scatterLegend" class="legend-row"></div>
+      <div class="chart-box" style="height:360px">
+        <canvas id="scatterChart"></canvas>
+      </div>
+    </div>
+
+    <div class="chart-card">
+      <div class="card-head">
+        <span class="card-title">📉 Elbow Method</span>
+      </div>
+      <p class="chart-desc">Titik "siku" menunjukkan K optimal — di mana penurunan inertia mulai melambat.</p>
+      <div class="chart-box" style="height:260px">
+        <canvas id="elbowChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cluster summary cards -->
+  <div class="section-head">
+    <h2 class="section-title">Ringkasan Cluster</h2>
+    <p class="section-sub">Karakteristik tiap kelompok pelanggan berdasarkan pola income dan belanja.</p>
+  </div>
+  <div id="clusterCards" class="cluster-grid"></div>
+
+  <!-- Data table -->
+  <div class="section-head" style="margin-top:48px">
+    <h2 class="section-title">Data Pelanggan</h2>
+    <div class="table-controls">
+      <select id="filterCluster" onchange="renderTable()" class="filter-select">
+        <option value="-1">Semua Cluster</option>
+      </select>
+      <span class="table-count" id="tableCount"></span>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>ID</th><th>Gender</th><th>Age</th>
+          <th>Income (k$)</th><th>Score</th>
+          <th>Cluster</th><th>Segment</th>
+        </tr>
+      </thead>
+      <tbody id="dataTbody"></tbody>
+    </table>
+  </div>
+
+  <div class="pagination" id="pagination">
+    <button class="pg-btn" onclick="changePage(-1)">← Prev</button>
+    <span class="pg-info" id="pgInfo">1 / 1</span>
+    <button class="pg-btn" onclick="changePage(1)">Next →</button>
+  </div>
+
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+  Tugas 6 Praktikum Kecerdasan Buatan &nbsp;|&nbsp; Dataset: Mall_Customers.csv (Kaggle) &nbsp;|&nbsp; Teknik Informatika — Universitas Bale Bandung
+</footer>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
